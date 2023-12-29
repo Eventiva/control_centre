@@ -532,6 +532,15 @@ subrepo:init() {
 subrepo:pull() {
   CALL subrepo:fetch
 
+  # Pull the latest changes from the upstream repository
+  RUN git pull "$subrepo_remote" "$subrepo_branch"
+
+  # Check if the pull was successful
+  if [ $? -ne 0 ]; then
+    error "Failed to pull from '$subrepo_remote' ('$subrepo_branch')."
+    return
+  fi
+
   # If forced pull, then clone instead
   if $force_wanted; then
     CALL subrepo:clone
